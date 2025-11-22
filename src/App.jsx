@@ -1,14 +1,10 @@
-// ==========================================
-// 1. MAIN Branch (Before) - src/App.jsx
-// ==========================================
-
 import { useState } from 'react'
 import './App.css'
 
 function App() {
   const [todos, setTodos] = useState([
-    { id: 1, text: 'E2Bのドキュメントを読む', completed: false },
-    { id: 2, text: 'デモ動画の構成を考える', completed: true },
+    { id: 1, text: 'Review the E2B documentation', completed: false },
+    { id: 2, text: 'Outline the demo video structure', completed: true },
   ])
   const [input, setInput] = useState('')
 
@@ -22,15 +18,15 @@ function App() {
     <div className="container">
       <h1>Simple Todo List</h1>
       <div className="input-group">
-        <input 
-          value={input} 
+        <input
+          value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="New task..."
+          placeholder="Enter a task..."
         />
         <button onClick={addTodo}>Add</button>
       </div>
       <ul className="todo-list">
-        {todos.map(todo => (
+        {todos.map((todo) => (
           <li key={todo.id} className={todo.completed ? 'completed' : ''}>
             {todo.text}
           </li>
