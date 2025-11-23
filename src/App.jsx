@@ -10,6 +10,9 @@ function App() {
     { id: 2, text: 'Outline the demo video structure', column: 'done' },
   ])
   const [input, setInput] = useState('')
+  const [openMenuId, setOpenMenuId] = useState(null)
+  const [editingId, setEditingId] = useState(null)
+  const [editText, setEditText] = useState('')
 
   const addTodo = (column = 'later') => {
     if (!input) return
@@ -25,6 +28,26 @@ function App() {
 
   const deleteTodo = (id) => {
     setTodos(todos.filter(todo => todo.id !== id))
+  }
+
+  const startEdit = (id, text) => {
+    setEditingId(id)
+    setEditText(text)
+    setOpenMenuId(null)
+  }
+
+  const saveEdit = () => {
+    if (!editText.trim()) return
+    setTodos(todos.map(todo =>
+      todo.id === editingId ? { ...todo, text: editText } : todo
+    ))
+    setEditingId(null)
+    setEditText('')
+  }
+
+  const cancelEdit = () => {
+    setEditingId(null)
+    setEditText('')
   }
 
   const handleStart = () => {
@@ -119,15 +142,58 @@ function App() {
             <div className="column-tasks">
               {laterTodos.map(todo => (
                 <div key={todo.id} className="kanban-task">
-                  <div className="task-text">{todo.text}</div>
-                  <div className="task-actions">
-                    <button onClick={() => moveTodo(todo.id, 'today')} className="move-btn">
-                      → Today
+                  <div className="kebab-menu-container">
+                    <button
+                      className="kebab-btn"
+                      onClick={() => setOpenMenuId(openMenuId === todo.id ? null : todo.id)}
+                    >
+                      ⋮
                     </button>
-                    <button onClick={() => deleteTodo(todo.id)} className="delete-btn">
-                      ×
-                    </button>
+                    {openMenuId === todo.id && (
+                      <div className="kebab-menu">
+                        <button onClick={() => startEdit(todo.id, todo.text)}>
+                          Edit
+                        </button>
+                        <button onClick={() => { deleteTodo(todo.id); setOpenMenuId(null); }}>
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
+                  {editingId === todo.id ? (
+                    <div className="task-edit-container">
+                      <textarea
+                        className="task-edit-textarea"
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault()
+                            saveEdit()
+                          } else if (e.key === 'Escape') {
+                            cancelEdit()
+                          }
+                        }}
+                        onBlur={cancelEdit}
+                        autoFocus
+                      />
+                      <div className="edit-hint">Enter to save, Esc to cancel</div>
+                    </div>
+                  ) : (
+                    <>
+                      <div
+                        className="task-text"
+                        onDoubleClick={() => startEdit(todo.id, todo.text)}
+                      >
+                        {todo.text}
+                      </div>
+                      <div className="task-actions">
+                        <button onClick={() => moveTodo(todo.id, 'today')} className="move-btn">
+                          TODAY
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
               {laterTodos.length === 0 && (
@@ -145,15 +211,61 @@ function App() {
             <div className="column-tasks">
               {todayTodos.map(todo => (
                 <div key={todo.id} className="kanban-task">
-                  <div className="task-text">{todo.text}</div>
-                  <div className="task-actions">
-                    <button onClick={() => moveTodo(todo.id, 'done')} className="move-btn done">
-                      ✓ Done
+                  <div className="kebab-menu-container">
+                    <button
+                      className="kebab-btn"
+                      onClick={() => setOpenMenuId(openMenuId === todo.id ? null : todo.id)}
+                    >
+                      ⋮
                     </button>
-                    <button onClick={() => deleteTodo(todo.id)} className="delete-btn">
-                      ×
-                    </button>
+                    {openMenuId === todo.id && (
+                      <div className="kebab-menu">
+                        <button onClick={() => startEdit(todo.id, todo.text)}>
+                          Edit
+                        </button>
+                        <button onClick={() => { deleteTodo(todo.id); setOpenMenuId(null); }}>
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
+                  {editingId === todo.id ? (
+                    <div className="task-edit-container">
+                      <textarea
+                        className="task-edit-textarea"
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault()
+                            saveEdit()
+                          } else if (e.key === 'Escape') {
+                            cancelEdit()
+                          }
+                        }}
+                        onBlur={cancelEdit}
+                        autoFocus
+                      />
+                      <div className="edit-hint">Enter to save, Esc to cancel</div>
+                    </div>
+                  ) : (
+                    <>
+                      <div
+                        className="task-text"
+                        onDoubleClick={() => startEdit(todo.id, todo.text)}
+                      >
+                        {todo.text}
+                      </div>
+                      <div className="task-actions">
+                        <button onClick={() => moveTodo(todo.id, 'later')} className="move-btn">
+                          LATER
+                        </button>
+                        <button onClick={() => moveTodo(todo.id, 'done')} className="move-btn done">
+                          DONE
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
               {todayTodos.length === 0 && (
@@ -171,15 +283,58 @@ function App() {
             <div className="column-tasks">
               {doneTodos.map(todo => (
                 <div key={todo.id} className="kanban-task done">
-                  <div className="task-text">{todo.text}</div>
-                  <div className="task-actions">
-                    <button onClick={() => moveTodo(todo.id, 'today')} className="move-btn">
-                      ← Today
+                  <div className="kebab-menu-container">
+                    <button
+                      className="kebab-btn"
+                      onClick={() => setOpenMenuId(openMenuId === todo.id ? null : todo.id)}
+                    >
+                      ⋮
                     </button>
-                    <button onClick={() => deleteTodo(todo.id)} className="delete-btn">
-                      ×
-                    </button>
+                    {openMenuId === todo.id && (
+                      <div className="kebab-menu">
+                        <button onClick={() => startEdit(todo.id, todo.text)}>
+                          Edit
+                        </button>
+                        <button onClick={() => { deleteTodo(todo.id); setOpenMenuId(null); }}>
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
+                  {editingId === todo.id ? (
+                    <div className="task-edit-container">
+                      <textarea
+                        className="task-edit-textarea"
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault()
+                            saveEdit()
+                          } else if (e.key === 'Escape') {
+                            cancelEdit()
+                          }
+                        }}
+                        onBlur={cancelEdit}
+                        autoFocus
+                      />
+                      <div className="edit-hint">Enter to save, Esc to cancel</div>
+                    </div>
+                  ) : (
+                    <>
+                      <div
+                        className="task-text"
+                        onDoubleClick={() => startEdit(todo.id, todo.text)}
+                      >
+                        {todo.text}
+                      </div>
+                      <div className="task-actions">
+                        <button onClick={() => moveTodo(todo.id, 'today')} className="move-btn">
+                          TODAY
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
               {doneTodos.length === 0 && (
