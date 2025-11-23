@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import './App.css'
+import LandingPage from './LandingPage'
 
 function App() {
+  const [showLanding, setShowLanding] = useState(true)
   const [todos, setTodos] = useState([
     { id: 1, text: 'Review the E2B documentation', completed: false },
     { id: 2, text: 'Outline the demo video structure', completed: true },
@@ -14,9 +16,27 @@ function App() {
     setInput('')
   }
 
+  const handleStart = () => {
+    setShowLanding(false)
+  }
+
+  const handleBackToHome = () => {
+    setShowLanding(true)
+  }
+
+  if (showLanding) {
+    return <LandingPage onStart={handleStart} />
+  }
+
   return (
     <div className="container">
-      <h1>Simple Todo List</h1>
+      <div className="header-with-back">
+        <button className="back-button" onClick={handleBackToHome}>
+          ← Back to Home
+        </button>
+        <div className="app-brand">NOT A MEMO</div>
+        <h1>Todo List</h1>
+      </div>
       <div className="input-group">
         <input
           value={input}

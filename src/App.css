@@ -8,6 +8,39 @@
   font-family: 'Inter', 'Hiragino Sans', 'Noto Sans JP', system-ui, sans-serif;
 }
 
+.header-with-back {
+  margin-bottom: 1.5rem;
+}
+
+.app-brand {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #7d4e57;
+  margin-bottom: 0.5rem;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #fff;
+  color: #6366f1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background: #f8fafc;
+  border-color: #6366f1;
+  transform: translateX(-3px);
+}
+
 h1 {
   margin: 0 0 1.5rem;
   font-size: 2rem;
